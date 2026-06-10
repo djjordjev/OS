@@ -1,0 +1,313 @@
+GAS LISTING /tmp/ccxXwlPW.s 			page 1
+
+
+   1              		.file	"TrapHandler.cpp"
+   2              		.option pic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.align	2
+   7              		.globl	TrapHandler
+   9              	TrapHandler:
+  10              	.LFB0:
+  11              		.file 1 "src/TrapHandler.cpp"
+   1:src/TrapHandler.cpp **** #include "../lib/hw.h"
+   2:src/TrapHandler.cpp **** #include "../h/MemoryAllocator.h"
+   3:src/TrapHandler.cpp **** 
+   4:src/TrapHandler.cpp **** extern "C" uint64 TrapHandler(uint64* savedRegisters){
+  12              		.loc 1 4 54
+  13              		.cfi_startproc
+  14              	.LVL0:
+   5:src/TrapHandler.cpp **** 
+   6:src/TrapHandler.cpp ****     uint64 scause;
+  15              		.loc 1 6 5
+   7:src/TrapHandler.cpp ****     asm volatile("csrr %0, scause" : "=r"(scause));
+  16              		.loc 1 7 5
+  17              		.loc 1 7 51 is_stmt 0
+  18              	#APP
+  19              	# 7 "src/TrapHandler.cpp" 1
+   8              	
+  20              		csrr a5, scause
+  21              	# 0 "" 2
+  22              	.LVL1:
+   9:src/TrapHandler.cpp ****     uint64 sysCallCode = savedRegisters[13];
+  23              		.loc 1 9 5 is_stmt 1
+  24              		.loc 1 9 12 is_stmt 0
+  25              	#NO_APP
+  26 0004 03378506 		ld	a4,104(a0)
+  27              	.LVL2:
+  10:src/TrapHandler.cpp **** 
+  11:src/TrapHandler.cpp ****     if(scause == 0x8 || scause == 0x9){
+  28              		.loc 1 11 5 is_stmt 1
+  29              	.LBB2:
+  30              		.loc 1 11 22 is_stmt 0
+  31 0008 938787FF 		addi	a5,a5,-8
+  32              	.LVL3:
+  33              		.loc 1 11 5
+  34 000c 93061000 		li	a3,1
+  35 0010 63ECF604 		bgtu	a5,a3,.L4
+  36              	.LBE2:
+   4:src/TrapHandler.cpp **** 
+  37              		.loc 1 4 54
+  38 0014 130101FF 		addi	sp,sp,-16
+  39              		.cfi_def_cfa_offset 16
+  40 0018 23341100 		sd	ra,8(sp)
+  41 001c 23308100 		sd	s0,0(sp)
+  42              		.cfi_offset 1, -8
+  43              		.cfi_offset 8, -16
+  44 0020 13040101 		addi	s0,sp,16
+  45              		.cfi_def_cfa 8, 0
+  12:src/TrapHandler.cpp **** 
+GAS LISTING /tmp/ccxXwlPW.s 			page 2
+
+
+  13:src/TrapHandler.cpp ****         if(sysCallCode == 0x1){
+  46              		.loc 1 13 9 is_stmt 1
+  47              	.LBB9:
+  48              	.LBB3:
+  49 0024 93071000 		li	a5,1
+  50              	.LVL4:
+  51 0028 6300F702 		beq	a4,a5,.L10
+  52              	.LBE3:
+  53              	.LBE9:
+  14:src/TrapHandler.cpp **** 
+  15:src/TrapHandler.cpp ****             uint64 sizeInBlocks = savedRegisters[14];
+  16:src/TrapHandler.cpp ****             void* addr = MemoryAllocator::malloc(sizeInBlocks);
+  17:src/TrapHandler.cpp ****             return (uint64)addr;
+  18:src/TrapHandler.cpp ****             //...
+  19:src/TrapHandler.cpp ****         }
+  20:src/TrapHandler.cpp **** 
+  21:src/TrapHandler.cpp ****         if(sysCallCode == 0x2){
+  54              		.loc 1 21 9
+  55              	.LBB10:
+  56              	.LBB5:
+  57 002c 93072000 		li	a5,2
+  58 0030 6304F702 		beq	a4,a5,.L11
+  59              	.LBE5:
+  60              	.LBE10:
+  22:src/TrapHandler.cpp **** 
+  23:src/TrapHandler.cpp ****             void* at = (void*)savedRegisters[14];
+  24:src/TrapHandler.cpp ****             int status = MemoryAllocator::dealloc(at);
+  25:src/TrapHandler.cpp ****             return (uint64)status;
+  26:src/TrapHandler.cpp ****             //...
+  27:src/TrapHandler.cpp ****         }
+  28:src/TrapHandler.cpp **** 
+  29:src/TrapHandler.cpp ****     }
+  30:src/TrapHandler.cpp **** 
+  31:src/TrapHandler.cpp ****     return -1;
+  61              		.loc 1 31 13 is_stmt 0
+  62 0034 1305F0FF 		li	a0,-1
+  63              	.LVL5:
+  64              	.L1:
+  32:src/TrapHandler.cpp **** 
+  33:src/TrapHandler.cpp **** }...
+  65              		.loc 1 33 1
+  66 0038 83308100 		ld	ra,8(sp)
+  67              		.cfi_remember_state
+  68              		.cfi_restore 1
+  69 003c 03340100 		ld	s0,0(sp)
+  70              		.cfi_restore 8
+  71              		.cfi_def_cfa 2, 16
+  72 0040 13010101 		addi	sp,sp,16
+  73              		.cfi_def_cfa_offset 0
+  74 0044 67800000 		jr	ra
+  75              	.LVL6:
+  76              	.L10:
+  77              		.cfi_restore_state
+  78              	.LBB11:
+  79              	.LBB7:
+  80              	.LBB4:
+  15:src/TrapHandler.cpp ****             uint64 sizeInBlocks = savedRegisters[14];
+GAS LISTING /tmp/ccxXwlPW.s 			page 3
+
+
+  81              		.loc 1 15 13 is_stmt 1
+  16:src/TrapHandler.cpp ****             void* addr = MemoryAllocator::malloc(sizeInBlocks);
+  82              		.loc 1 16 13
+  16:src/TrapHandler.cpp ****             void* addr = MemoryAllocator::malloc(sizeInBlocks);
+  83              		.loc 1 16 49 is_stmt 0
+  84 0048 03350507 		ld	a0,112(a0)
+  85              	.LVL7:
+  86 004c 97000000 		call	_ZN15MemoryAllocator6mallocEm@plt
+  86      E7800000 
+  87              	.LVL8:
+  17:src/TrapHandler.cpp ****             return (uint64)addr;
+  88              		.loc 1 17 13 is_stmt 1
+  17:src/TrapHandler.cpp ****             return (uint64)addr;
+  89              		.loc 1 17 28 is_stmt 0
+  90 0054 6FF05FFE 		j	.L1
+  91              	.LVL9:
+  92              	.L11:
+  93              	.LBE4:
+  94              	.LBE7:
+  95              	.LBB8:
+  96              	.LBB6:
+  23:src/TrapHandler.cpp ****             void* at = (void*)savedRegisters[14];
+  97              		.loc 1 23 13 is_stmt 1
+  24:src/TrapHandler.cpp ****             int status = MemoryAllocator::dealloc(at);
+  98              		.loc 1 24 13
+  24:src/TrapHandler.cpp ****             int status = MemoryAllocator::dealloc(at);
+  99              		.loc 1 24 50 is_stmt 0
+ 100 0058 03350507 		ld	a0,112(a0)
+ 101              	.LVL10:
+ 102 005c 97000000 		call	_ZN15MemoryAllocator7deallocEPv@plt
+ 102      E7800000 
+ 103              	.LVL11:
+  25:src/TrapHandler.cpp ****             return (uint64)status;
+ 104              		.loc 1 25 13 is_stmt 1
+  25:src/TrapHandler.cpp ****             return (uint64)status;
+ 105              		.loc 1 25 28 is_stmt 0
+ 106 0064 6FF05FFD 		j	.L1
+ 107              	.LVL12:
+ 108              	.L4:
+ 109              		.cfi_def_cfa_register 2
+ 110              		.cfi_restore 1
+ 111              		.cfi_restore 8
+ 112              	.LBE6:
+ 113              	.LBE8:
+ 114              	.LBE11:
+  31:src/TrapHandler.cpp ****     return -1;
+ 115              		.loc 1 31 13
+ 116 0068 1305F0FF 		li	a0,-1
+ 117              	.LVL13:
+ 118              		.loc 1 33 1
+ 119 006c 67800000 		ret
+ 120              		.cfi_endproc
+ 121              	.LFE0:
+ 123              	.Letext0:
+ 124              		.file 2 "src/../lib/hw.h"
+ 125              		.file 3 "src/../h/MemoryAllocator.h"
+GAS LISTING /tmp/ccxXwlPW.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 TrapHandler.cpp
+     /tmp/ccxXwlPW.s:9      .text:0000000000000000 TrapHandler
+     /tmp/ccxXwlPW.s:13     .text:0000000000000000 .L0 
+     /tmp/ccxXwlPW.s:15     .text:0000000000000000 .L0 
+     /tmp/ccxXwlPW.s:16     .text:0000000000000000 .L0 
+     /tmp/ccxXwlPW.s:17     .text:0000000000000000 .L0 
+ src/TrapHandler.cpp:7      .text:0000000000000000 .L0 
+     /tmp/ccxXwlPW.s:24     .text:0000000000000004 .L0 
+     /tmp/ccxXwlPW.s:26     .text:0000000000000004 .L0 
+     /tmp/ccxXwlPW.s:30     .text:0000000000000008 .L0 
+     /tmp/ccxXwlPW.s:31     .text:0000000000000008 .L0 
+     /tmp/ccxXwlPW.s:34     .text:000000000000000c .L0 
+     /tmp/ccxXwlPW.s:38     .text:0000000000000014 .L0 
+     /tmp/ccxXwlPW.s:39     .text:0000000000000018 .L0 
+     /tmp/ccxXwlPW.s:42     .text:0000000000000020 .L0 
+     /tmp/ccxXwlPW.s:43     .text:0000000000000020 .L0 
+     /tmp/ccxXwlPW.s:45     .text:0000000000000024 .L0 
+     /tmp/ccxXwlPW.s:49     .text:0000000000000024 .L0 
+     /tmp/ccxXwlPW.s:57     .text:000000000000002c .L0 
+     /tmp/ccxXwlPW.s:62     .text:0000000000000034 .L0 
+     /tmp/ccxXwlPW.s:66     .text:0000000000000038 .L0 
+     /tmp/ccxXwlPW.s:67     .text:000000000000003c .L0 
+     /tmp/ccxXwlPW.s:68     .text:000000000000003c .L0 
+     /tmp/ccxXwlPW.s:70     .text:0000000000000040 .L0 
+     /tmp/ccxXwlPW.s:71     .text:0000000000000040 .L0 
+     /tmp/ccxXwlPW.s:73     .text:0000000000000044 .L0 
+     /tmp/ccxXwlPW.s:77     .text:0000000000000048 .L0 
+     /tmp/ccxXwlPW.s:82     .text:0000000000000048 .L0 
+     /tmp/ccxXwlPW.s:83     .text:0000000000000048 .L0 
+     /tmp/ccxXwlPW.s:84     .text:0000000000000048 .L0 
+     /tmp/ccxXwlPW.s:89     .text:0000000000000054 .L0 
+     /tmp/ccxXwlPW.s:90     .text:0000000000000054 .L0 
+     /tmp/ccxXwlPW.s:98     .text:0000000000000058 .L0 
+     /tmp/ccxXwlPW.s:99     .text:0000000000000058 .L0 
+     /tmp/ccxXwlPW.s:100    .text:0000000000000058 .L0 
+     /tmp/ccxXwlPW.s:105    .text:0000000000000064 .L0 
+     /tmp/ccxXwlPW.s:106    .text:0000000000000064 .L0 
+     /tmp/ccxXwlPW.s:109    .text:0000000000000068 .L0 
+     /tmp/ccxXwlPW.s:110    .text:0000000000000068 .L0 
+     /tmp/ccxXwlPW.s:111    .text:0000000000000068 .L0 
+     /tmp/ccxXwlPW.s:116    .text:0000000000000068 .L0 
+     /tmp/ccxXwlPW.s:119    .text:000000000000006c .L0 
+     /tmp/ccxXwlPW.s:120    .text:0000000000000070 .L0 
+     /tmp/ccxXwlPW.s:126    .text:0000000000000070 .L0 
+     /tmp/ccxXwlPW.s:108    .text:0000000000000068 .L4
+     /tmp/ccxXwlPW.s:76     .text:0000000000000048 .L10
+     /tmp/ccxXwlPW.s:92     .text:0000000000000058 .L11
+     /tmp/ccxXwlPW.s:64     .text:0000000000000038 .L1
+     /tmp/ccxXwlPW.s:437    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccxXwlPW.s:1080   .debug_str:000000000000019f .LASF28
+     /tmp/ccxXwlPW.s:1088   .debug_str:000000000000029e .LASF29
+     /tmp/ccxXwlPW.s:1078   .debug_str:000000000000016f .LASF30
+     /tmp/ccxXwlPW.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccxXwlPW.s:123    .text:0000000000000070 .Letext0
+     /tmp/ccxXwlPW.s:1028   .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccxXwlPW.s:1086   .debug_str:0000000000000291 .LASF0
+GAS LISTING /tmp/ccxXwlPW.s 			page 5
+
+
+     /tmp/ccxXwlPW.s:1068   .debug_str:00000000000000fb .LASF1
+     /tmp/ccxXwlPW.s:1064   .debug_str:00000000000000db .LASF2
+     /tmp/ccxXwlPW.s:1044   .debug_str:000000000000006c .LASF4
+     /tmp/ccxXwlPW.s:1066   .debug_str:00000000000000e9 .LASF3
+     /tmp/ccxXwlPW.s:1036   .debug_str:000000000000002f .LASF5
+     /tmp/ccxXwlPW.s:1030   .debug_str:0000000000000000 .LASF6
+     /tmp/ccxXwlPW.s:1058   .debug_str:00000000000000b3 .LASF7
+     /tmp/ccxXwlPW.s:1090   .debug_str:00000000000002b2 .LASF8
+     /tmp/ccxXwlPW.s:1042   .debug_str:000000000000005e .LASF9
+     /tmp/ccxXwlPW.s:1110   .debug_str:0000000000000347 .LASF10
+     /tmp/ccxXwlPW.s:1062   .debug_str:00000000000000cc .LASF11
+     /tmp/ccxXwlPW.s:1102   .debug_str:000000000000031f .LASF12
+     /tmp/ccxXwlPW.s:1096   .debug_str:00000000000002e4 .LASF13
+     /tmp/ccxXwlPW.s:1072   .debug_str:000000000000013b .LASF14
+     /tmp/ccxXwlPW.s:1048   .debug_str:000000000000007e .LASF15
+     /tmp/ccxXwlPW.s:1094   .debug_str:00000000000002ce .LASF16
+     /tmp/ccxXwlPW.s:1034   .debug_str:000000000000001f .LASF23
+     /tmp/ccxXwlPW.s:1104   .debug_str:000000000000032f .LASF31
+     /tmp/ccxXwlPW.s:1100   .debug_str:0000000000000312 .LASF17
+     /tmp/ccxXwlPW.s:1038   .debug_str:0000000000000036 .LASF18
+     /tmp/ccxXwlPW.s:1046   .debug_str:0000000000000073 .LASF32
+     /tmp/ccxXwlPW.s:1040   .debug_str:000000000000003b .LASF33
+     /tmp/ccxXwlPW.s:1106   .debug_str:0000000000000338 .LASF19
+     /tmp/ccxXwlPW.s:1098   .debug_str:00000000000002f4 .LASF21
+     /tmp/ccxXwlPW.s:1108   .debug_str:000000000000033f .LASF20
+     /tmp/ccxXwlPW.s:1082   .debug_str:0000000000000263 .LASF22
+     /tmp/ccxXwlPW.s:1076   .debug_str:0000000000000156 .LASF24
+     /tmp/ccxXwlPW.s:1060   .debug_str:00000000000000c6 .LASF34
+     /tmp/ccxXwlPW.s:1070   .debug_str:000000000000010e .LASF35
+     /tmp/ccxXwlPW.s:1032   .debug_str:0000000000000013 .LASF36
+     /tmp/ccxXwlPW.s:1084   .debug_str:0000000000000283 .LASF37
+     /tmp/ccxXwlPW.s:1092   .debug_str:00000000000002c2 .LASF38
+     /tmp/ccxXwlPW.s:10     .text:0000000000000000 .LFB0
+     /tmp/ccxXwlPW.s:121    .text:0000000000000070 .LFE0
+     /tmp/ccxXwlPW.s:1074   .debug_str:0000000000000147 .LASF39
+     /tmp/ccxXwlPW.s:899    .debug_loc:0000000000000000 .LLST0
+     /tmp/ccxXwlPW.s:1054   .debug_str:00000000000000a7 .LASF25
+     /tmp/ccxXwlPW.s:946    .debug_loc:00000000000000b4 .LLST1
+     /tmp/ccxXwlPW.s:1052   .debug_str:000000000000009b .LASF26
+     /tmp/ccxXwlPW.s:965    .debug_loc:0000000000000101 .LLST2
+     /tmp/ccxXwlPW.s:80     .text:0000000000000048 .LBB4
+     /tmp/ccxXwlPW.s:93     .text:0000000000000058 .LBE4
+     /tmp/ccxXwlPW.s:984    .debug_loc:000000000000015d .LLST3
+     /tmp/ccxXwlPW.s:1056   .debug_str:00000000000000ae .LASF40
+     /tmp/ccxXwlPW.s:87     .text:0000000000000054 .LVL8
+     /tmp/ccxXwlPW.s:96     .text:0000000000000058 .LBB6
+     /tmp/ccxXwlPW.s:112    .text:0000000000000068 .LBE6
+     /tmp/ccxXwlPW.s:996    .debug_loc:0000000000000195 .LLST4
+     /tmp/ccxXwlPW.s:1050   .debug_str:0000000000000094 .LASF27
+     /tmp/ccxXwlPW.s:1008   .debug_loc:00000000000001cd .LLST5
+     /tmp/ccxXwlPW.s:103    .text:0000000000000064 .LVL11
+     /tmp/ccxXwlPW.s:14     .text:0000000000000000 .LVL0
+     /tmp/ccxXwlPW.s:63     .text:0000000000000038 .LVL5
+     /tmp/ccxXwlPW.s:75     .text:0000000000000048 .LVL6
+     /tmp/ccxXwlPW.s:85     .text:000000000000004c .LVL7
+     /tmp/ccxXwlPW.s:91     .text:0000000000000058 .LVL9
+     /tmp/ccxXwlPW.s:101    .text:000000000000005c .LVL10
+GAS LISTING /tmp/ccxXwlPW.s 			page 6
+
+
+     /tmp/ccxXwlPW.s:107    .text:0000000000000068 .LVL12
+     /tmp/ccxXwlPW.s:117    .text:000000000000006c .LVL13
+     /tmp/ccxXwlPW.s:22     .text:0000000000000004 .LVL1
+     /tmp/ccxXwlPW.s:32     .text:000000000000000c .LVL3
+     /tmp/ccxXwlPW.s:50     .text:0000000000000028 .LVL4
+     /tmp/ccxXwlPW.s:27     .text:0000000000000008 .LVL2
+     /tmp/ccxXwlPW.s:127    .debug_info:0000000000000000 .Ldebug_info0
+
+UNDEFINED SYMBOLS
+_ZN15MemoryAllocator6mallocEm
+_ZN15MemoryAllocator7deallocEPv
