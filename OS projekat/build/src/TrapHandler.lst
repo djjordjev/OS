@@ -1,0 +1,339 @@
+GAS LISTING /tmp/ccKTxJpq.s 			page 1
+
+
+   1              		.file	"TrapHandler.cpp"
+   2              		.option pic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.align	2
+   7              		.globl	TrapHandler
+   9              	TrapHandler:
+  10              	.LFB0:
+  11              		.file 1 "src/TrapHandler.cpp"
+   1:src/TrapHandler.cpp **** #include "../lib/hw.h"
+   2:src/TrapHandler.cpp **** #include "../h/MemoryAllocator.hpp"
+   3:src/TrapHandler.cpp **** #include "../lib/console.h"
+   4:src/TrapHandler.cpp **** 
+   5:src/TrapHandler.cpp **** extern "C" uint64 TrapHandler(uint64* savedRegisters){
+  12              		.loc 1 5 54
+  13              		.cfi_startproc
+  14              	.LVL0:
+   6:src/TrapHandler.cpp **** 
+   7:src/TrapHandler.cpp ****     uint64 scause;
+  15              		.loc 1 7 5
+   8:src/TrapHandler.cpp ****     asm volatile("csrr %0, scause" : "=r"(scause));
+  16              		.loc 1 8 5
+  17              		.loc 1 8 51 is_stmt 0
+  18              	#APP
+  19              	# 8 "src/TrapHandler.cpp" 1
+   9              	
+  20              		csrr a5, scause
+  21              	# 0 "" 2
+  22              	.LVL1:
+  10:src/TrapHandler.cpp ****     uint64 sysCallCode = savedRegisters[13];
+  23              		.loc 1 10 5 is_stmt 1
+  24              		.loc 1 10 12 is_stmt 0
+  25              	#NO_APP
+  26 0004 03378506 		ld	a4,104(a0)
+  27              	.LVL2:
+  11:src/TrapHandler.cpp **** 
+  12:src/TrapHandler.cpp ****     if(scause == 0x8 || scause == 0x9){
+  28              		.loc 1 12 5 is_stmt 1
+  29              	.LBB2:
+  30              		.loc 1 12 22 is_stmt 0
+  31 0008 938787FF 		addi	a5,a5,-8
+  32              	.LVL3:
+  33              		.loc 1 12 5
+  34 000c 93061000 		li	a3,1
+  35 0010 63E8F606 		bgtu	a5,a3,.L4
+  36              	.LBE2:
+   5:src/TrapHandler.cpp **** 
+  37              		.loc 1 5 54
+  38 0014 130101FE 		addi	sp,sp,-32
+  39              		.cfi_def_cfa_offset 32
+  40 0018 233C1100 		sd	ra,24(sp)
+  41 001c 23388100 		sd	s0,16(sp)
+  42 0020 23349100 		sd	s1,8(sp)
+  43              		.cfi_offset 1, -8
+  44              		.cfi_offset 8, -16
+  45              		.cfi_offset 9, -24
+GAS LISTING /tmp/ccKTxJpq.s 			page 2
+
+
+  46 0024 13040102 		addi	s0,sp,32
+  47              		.cfi_def_cfa 8, 0
+  48 0028 93040500 		mv	s1,a0
+  13:src/TrapHandler.cpp **** 
+  14:src/TrapHandler.cpp ****         if(sysCallCode == 0x1){
+  49              		.loc 1 14 9 is_stmt 1
+  50              	.LBB9:
+  51              	.LBB3:
+  52 002c 93071000 		li	a5,1
+  53              	.LVL4:
+  54 0030 6302F702 		beq	a4,a5,.L10
+  55              	.LBE3:
+  56              	.LBE9:
+  15:src/TrapHandler.cpp **** 
+  16:src/TrapHandler.cpp ****             uint64 sizeInBlocks = savedRegisters[14];
+  17:src/TrapHandler.cpp ****             void* addr = MemoryAllocator::malloc(sizeInBlocks);
+  18:src/TrapHandler.cpp ****             return (uint64)addr;
+  19:src/TrapHandler.cpp ****             //...
+  20:src/TrapHandler.cpp ****         }
+  21:src/TrapHandler.cpp **** 
+  22:src/TrapHandler.cpp ****         if(sysCallCode == 0x2){
+  57              		.loc 1 22 9
+  58              	.LBB10:
+  59              	.LBB5:
+  60 0034 93072000 		li	a5,2
+  61 0038 6306F702 		beq	a4,a5,.L11
+  62              	.LBE5:
+  63              	.LBE10:
+  23:src/TrapHandler.cpp ****             __putc('D');
+  24:src/TrapHandler.cpp **** 
+  25:src/TrapHandler.cpp ****             void* at = (void*)savedRegisters[14];
+  26:src/TrapHandler.cpp ****             int status = MemoryAllocator::dealloc(at);
+  27:src/TrapHandler.cpp ****             return (uint64)status;
+  28:src/TrapHandler.cpp ****             //...
+  29:src/TrapHandler.cpp ****         }
+  30:src/TrapHandler.cpp **** 
+  31:src/TrapHandler.cpp ****     }
+  32:src/TrapHandler.cpp **** 
+  33:src/TrapHandler.cpp ****     return -1;
+  64              		.loc 1 33 13 is_stmt 0
+  65 003c 1305F0FF 		li	a0,-1
+  66              	.LVL5:
+  67              	.L1:
+  34:src/TrapHandler.cpp **** 
+  35:src/TrapHandler.cpp **** }...
+  68              		.loc 1 35 1
+  69 0040 83308101 		ld	ra,24(sp)
+  70              		.cfi_remember_state
+  71              		.cfi_restore 1
+  72 0044 03340101 		ld	s0,16(sp)
+  73              		.cfi_restore 8
+  74              		.cfi_def_cfa 2, 32
+  75 0048 83348100 		ld	s1,8(sp)
+  76              		.cfi_restore 9
+  77              	.LVL6:
+  78 004c 13010102 		addi	sp,sp,32
+  79              		.cfi_def_cfa_offset 0
+GAS LISTING /tmp/ccKTxJpq.s 			page 3
+
+
+  80 0050 67800000 		jr	ra
+  81              	.LVL7:
+  82              	.L10:
+  83              		.cfi_restore_state
+  84              	.LBB11:
+  85              	.LBB7:
+  86              	.LBB4:
+  16:src/TrapHandler.cpp ****             uint64 sizeInBlocks = savedRegisters[14];
+  87              		.loc 1 16 13 is_stmt 1
+  17:src/TrapHandler.cpp ****             void* addr = MemoryAllocator::malloc(sizeInBlocks);
+  88              		.loc 1 17 13
+  17:src/TrapHandler.cpp ****             void* addr = MemoryAllocator::malloc(sizeInBlocks);
+  89              		.loc 1 17 49 is_stmt 0
+  90 0054 03350507 		ld	a0,112(a0)
+  91 0058 97000000 		call	_ZN15MemoryAllocator6mallocEm@plt
+  91      E7800000 
+  92              	.LVL8:
+  18:src/TrapHandler.cpp ****             return (uint64)addr;
+  93              		.loc 1 18 13 is_stmt 1
+  18:src/TrapHandler.cpp ****             return (uint64)addr;
+  94              		.loc 1 18 28 is_stmt 0
+  95 0060 6FF01FFE 		j	.L1
+  96              	.LVL9:
+  97              	.L11:
+  98              	.LBE4:
+  99              	.LBE7:
+ 100              	.LBB8:
+ 101              	.LBB6:
+  23:src/TrapHandler.cpp ****             __putc('D');
+ 102              		.loc 1 23 13 is_stmt 1
+  23:src/TrapHandler.cpp ****             __putc('D');
+ 103              		.loc 1 23 19 is_stmt 0
+ 104 0064 13054004 		li	a0,68
+ 105 0068 97000000 		call	__putc@plt
+ 105      E7800000 
+ 106              	.LVL10:
+  25:src/TrapHandler.cpp ****             void* at = (void*)savedRegisters[14];
+ 107              		.loc 1 25 13 is_stmt 1
+  26:src/TrapHandler.cpp ****             int status = MemoryAllocator::dealloc(at);
+ 108              		.loc 1 26 13
+  26:src/TrapHandler.cpp ****             int status = MemoryAllocator::dealloc(at);
+ 109              		.loc 1 26 50 is_stmt 0
+ 110 0070 03B50407 		ld	a0,112(s1)
+ 111 0074 97000000 		call	_ZN15MemoryAllocator7deallocEPv@plt
+ 111      E7800000 
+ 112              	.LVL11:
+  27:src/TrapHandler.cpp ****             return (uint64)status;
+ 113              		.loc 1 27 13 is_stmt 1
+  27:src/TrapHandler.cpp ****             return (uint64)status;
+ 114              		.loc 1 27 28 is_stmt 0
+ 115 007c 6FF05FFC 		j	.L1
+ 116              	.LVL12:
+ 117              	.L4:
+ 118              		.cfi_def_cfa_register 2
+ 119              		.cfi_restore 1
+ 120              		.cfi_restore 8
+ 121              		.cfi_restore 9
+GAS LISTING /tmp/ccKTxJpq.s 			page 4
+
+
+ 122              	.LBE6:
+ 123              	.LBE8:
+ 124              	.LBE11:
+  33:src/TrapHandler.cpp ****     return -1;
+ 125              		.loc 1 33 13
+ 126 0080 1305F0FF 		li	a0,-1
+ 127              	.LVL13:
+ 128              		.loc 1 35 1
+ 129 0084 67800000 		ret
+ 130              		.cfi_endproc
+ 131              	.LFE0:
+ 133              	.Letext0:
+ 134              		.file 2 "src/../lib/hw.h"
+ 135              		.file 3 "src/../h/MemoryAllocator.hpp"
+ 136              		.file 4 "src/../lib/console.h"
+GAS LISTING /tmp/ccKTxJpq.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 TrapHandler.cpp
+     /tmp/ccKTxJpq.s:9      .text:0000000000000000 TrapHandler
+     /tmp/ccKTxJpq.s:13     .text:0000000000000000 .L0 
+     /tmp/ccKTxJpq.s:15     .text:0000000000000000 .L0 
+     /tmp/ccKTxJpq.s:16     .text:0000000000000000 .L0 
+     /tmp/ccKTxJpq.s:17     .text:0000000000000000 .L0 
+ src/TrapHandler.cpp:8      .text:0000000000000000 .L0 
+     /tmp/ccKTxJpq.s:24     .text:0000000000000004 .L0 
+     /tmp/ccKTxJpq.s:26     .text:0000000000000004 .L0 
+     /tmp/ccKTxJpq.s:30     .text:0000000000000008 .L0 
+     /tmp/ccKTxJpq.s:31     .text:0000000000000008 .L0 
+     /tmp/ccKTxJpq.s:34     .text:000000000000000c .L0 
+     /tmp/ccKTxJpq.s:38     .text:0000000000000014 .L0 
+     /tmp/ccKTxJpq.s:39     .text:0000000000000018 .L0 
+     /tmp/ccKTxJpq.s:43     .text:0000000000000024 .L0 
+     /tmp/ccKTxJpq.s:44     .text:0000000000000024 .L0 
+     /tmp/ccKTxJpq.s:45     .text:0000000000000024 .L0 
+     /tmp/ccKTxJpq.s:47     .text:0000000000000028 .L0 
+     /tmp/ccKTxJpq.s:52     .text:000000000000002c .L0 
+     /tmp/ccKTxJpq.s:60     .text:0000000000000034 .L0 
+     /tmp/ccKTxJpq.s:65     .text:000000000000003c .L0 
+     /tmp/ccKTxJpq.s:69     .text:0000000000000040 .L0 
+     /tmp/ccKTxJpq.s:70     .text:0000000000000044 .L0 
+     /tmp/ccKTxJpq.s:71     .text:0000000000000044 .L0 
+     /tmp/ccKTxJpq.s:73     .text:0000000000000048 .L0 
+     /tmp/ccKTxJpq.s:74     .text:0000000000000048 .L0 
+     /tmp/ccKTxJpq.s:76     .text:000000000000004c .L0 
+     /tmp/ccKTxJpq.s:79     .text:0000000000000050 .L0 
+     /tmp/ccKTxJpq.s:83     .text:0000000000000054 .L0 
+     /tmp/ccKTxJpq.s:88     .text:0000000000000054 .L0 
+     /tmp/ccKTxJpq.s:89     .text:0000000000000054 .L0 
+     /tmp/ccKTxJpq.s:90     .text:0000000000000054 .L0 
+     /tmp/ccKTxJpq.s:94     .text:0000000000000060 .L0 
+     /tmp/ccKTxJpq.s:95     .text:0000000000000060 .L0 
+     /tmp/ccKTxJpq.s:103    .text:0000000000000064 .L0 
+     /tmp/ccKTxJpq.s:104    .text:0000000000000064 .L0 
+     /tmp/ccKTxJpq.s:108    .text:0000000000000070 .L0 
+     /tmp/ccKTxJpq.s:109    .text:0000000000000070 .L0 
+     /tmp/ccKTxJpq.s:110    .text:0000000000000070 .L0 
+     /tmp/ccKTxJpq.s:114    .text:000000000000007c .L0 
+     /tmp/ccKTxJpq.s:115    .text:000000000000007c .L0 
+     /tmp/ccKTxJpq.s:118    .text:0000000000000080 .L0 
+     /tmp/ccKTxJpq.s:119    .text:0000000000000080 .L0 
+     /tmp/ccKTxJpq.s:120    .text:0000000000000080 .L0 
+     /tmp/ccKTxJpq.s:121    .text:0000000000000080 .L0 
+     /tmp/ccKTxJpq.s:126    .text:0000000000000080 .L0 
+     /tmp/ccKTxJpq.s:129    .text:0000000000000084 .L0 
+     /tmp/ccKTxJpq.s:130    .text:0000000000000088 .L0 
+     /tmp/ccKTxJpq.s:137    .text:0000000000000088 .L0 
+     /tmp/ccKTxJpq.s:117    .text:0000000000000080 .L4
+     /tmp/ccKTxJpq.s:82     .text:0000000000000054 .L10
+     /tmp/ccKTxJpq.s:97     .text:0000000000000064 .L11
+     /tmp/ccKTxJpq.s:67     .text:0000000000000040 .L1
+     /tmp/ccKTxJpq.s:465    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccKTxJpq.s:1125   .debug_str:000000000000019f .LASF28
+     /tmp/ccKTxJpq.s:1133   .debug_str:000000000000029e .LASF29
+GAS LISTING /tmp/ccKTxJpq.s 			page 6
+
+
+     /tmp/ccKTxJpq.s:1123   .debug_str:000000000000016f .LASF30
+     /tmp/ccKTxJpq.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccKTxJpq.s:133    .text:0000000000000088 .Letext0
+     /tmp/ccKTxJpq.s:1073   .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccKTxJpq.s:1131   .debug_str:0000000000000291 .LASF0
+     /tmp/ccKTxJpq.s:1113   .debug_str:00000000000000fb .LASF1
+     /tmp/ccKTxJpq.s:1109   .debug_str:00000000000000db .LASF2
+     /tmp/ccKTxJpq.s:1089   .debug_str:000000000000006c .LASF4
+     /tmp/ccKTxJpq.s:1111   .debug_str:00000000000000e9 .LASF3
+     /tmp/ccKTxJpq.s:1081   .debug_str:000000000000002f .LASF5
+     /tmp/ccKTxJpq.s:1075   .debug_str:0000000000000000 .LASF6
+     /tmp/ccKTxJpq.s:1103   .debug_str:00000000000000b3 .LASF7
+     /tmp/ccKTxJpq.s:1137   .debug_str:00000000000002b9 .LASF8
+     /tmp/ccKTxJpq.s:1087   .debug_str:000000000000005e .LASF9
+     /tmp/ccKTxJpq.s:1157   .debug_str:000000000000034e .LASF10
+     /tmp/ccKTxJpq.s:1107   .debug_str:00000000000000cc .LASF11
+     /tmp/ccKTxJpq.s:1149   .debug_str:0000000000000326 .LASF12
+     /tmp/ccKTxJpq.s:1143   .debug_str:00000000000002eb .LASF13
+     /tmp/ccKTxJpq.s:1117   .debug_str:000000000000013b .LASF14
+     /tmp/ccKTxJpq.s:1093   .debug_str:000000000000007e .LASF15
+     /tmp/ccKTxJpq.s:1141   .debug_str:00000000000002d5 .LASF16
+     /tmp/ccKTxJpq.s:1079   .debug_str:000000000000001f .LASF23
+     /tmp/ccKTxJpq.s:1151   .debug_str:0000000000000336 .LASF31
+     /tmp/ccKTxJpq.s:1147   .debug_str:0000000000000319 .LASF17
+     /tmp/ccKTxJpq.s:1083   .debug_str:0000000000000036 .LASF18
+     /tmp/ccKTxJpq.s:1091   .debug_str:0000000000000073 .LASF32
+     /tmp/ccKTxJpq.s:1085   .debug_str:000000000000003b .LASF33
+     /tmp/ccKTxJpq.s:1153   .debug_str:000000000000033f .LASF19
+     /tmp/ccKTxJpq.s:1145   .debug_str:00000000000002fb .LASF21
+     /tmp/ccKTxJpq.s:1155   .debug_str:0000000000000346 .LASF20
+     /tmp/ccKTxJpq.s:1127   .debug_str:0000000000000263 .LASF22
+     /tmp/ccKTxJpq.s:1121   .debug_str:0000000000000156 .LASF24
+     /tmp/ccKTxJpq.s:1105   .debug_str:00000000000000c6 .LASF34
+     /tmp/ccKTxJpq.s:1115   .debug_str:000000000000010e .LASF35
+     /tmp/ccKTxJpq.s:1077   .debug_str:0000000000000013 .LASF36
+     /tmp/ccKTxJpq.s:1129   .debug_str:0000000000000283 .LASF37
+     /tmp/ccKTxJpq.s:1139   .debug_str:00000000000002c9 .LASF38
+     /tmp/ccKTxJpq.s:10     .text:0000000000000000 .LFB0
+     /tmp/ccKTxJpq.s:131    .text:0000000000000088 .LFE0
+     /tmp/ccKTxJpq.s:1119   .debug_str:0000000000000147 .LASF39
+     /tmp/ccKTxJpq.s:966    .debug_loc:0000000000000000 .LLST0
+     /tmp/ccKTxJpq.s:1099   .debug_str:00000000000000a7 .LASF25
+     /tmp/ccKTxJpq.s:999    .debug_loc:0000000000000088 .LLST1
+     /tmp/ccKTxJpq.s:1097   .debug_str:000000000000009b .LASF26
+     /tmp/ccKTxJpq.s:1018   .debug_loc:00000000000000d5 .LLST2
+     /tmp/ccKTxJpq.s:86     .text:0000000000000054 .LBB4
+     /tmp/ccKTxJpq.s:98     .text:0000000000000064 .LBE4
+     /tmp/ccKTxJpq.s:1037   .debug_loc:0000000000000131 .LLST3
+     /tmp/ccKTxJpq.s:1101   .debug_str:00000000000000ae .LASF40
+     /tmp/ccKTxJpq.s:92     .text:0000000000000060 .LVL8
+     /tmp/ccKTxJpq.s:101    .text:0000000000000064 .LBB6
+     /tmp/ccKTxJpq.s:122    .text:0000000000000080 .LBE6
+     /tmp/ccKTxJpq.s:1045   .debug_loc:0000000000000156 .LLST4
+     /tmp/ccKTxJpq.s:1095   .debug_str:0000000000000094 .LASF27
+     /tmp/ccKTxJpq.s:1053   .debug_loc:000000000000017b .LLST5
+     /tmp/ccKTxJpq.s:106    .text:0000000000000070 .LVL10
+     /tmp/ccKTxJpq.s:112    .text:000000000000007c .LVL11
+GAS LISTING /tmp/ccKTxJpq.s 			page 7
+
+
+     /tmp/ccKTxJpq.s:1135   .debug_str:00000000000002b2 .LASF41
+     /tmp/ccKTxJpq.s:14     .text:0000000000000000 .LVL0
+     /tmp/ccKTxJpq.s:66     .text:0000000000000040 .LVL5
+     /tmp/ccKTxJpq.s:77     .text:000000000000004c .LVL6
+     /tmp/ccKTxJpq.s:81     .text:0000000000000054 .LVL7
+     /tmp/ccKTxJpq.s:116    .text:0000000000000080 .LVL12
+     /tmp/ccKTxJpq.s:127    .text:0000000000000084 .LVL13
+     /tmp/ccKTxJpq.s:22     .text:0000000000000004 .LVL1
+     /tmp/ccKTxJpq.s:32     .text:000000000000000c .LVL3
+     /tmp/ccKTxJpq.s:53     .text:0000000000000030 .LVL4
+     /tmp/ccKTxJpq.s:27     .text:0000000000000008 .LVL2
+     /tmp/ccKTxJpq.s:96     .text:0000000000000064 .LVL9
+     /tmp/ccKTxJpq.s:138    .debug_info:0000000000000000 .Ldebug_info0
+
+UNDEFINED SYMBOLS
+_ZN15MemoryAllocator6mallocEm
+__putc
+_ZN15MemoryAllocator7deallocEPv
